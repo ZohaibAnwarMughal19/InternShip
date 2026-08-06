@@ -123,7 +123,7 @@
                 contentType: false,  
                 processData: false,  
                 success: function(response){
-                    alert(response);
+                    $("#showerror").html(response);
                     console.log(response);   
                     if(response.includes("Successfully")){
                         $('form')[0].reset(); 

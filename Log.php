@@ -2,7 +2,7 @@
 
 session_start();
 
-$conn = mysqli_connect("localhost", "root", "", "internship_db");
+require_once 'db.php';
 
 if($conn){ 
 $email=$_POST['email'];
@@ -16,9 +16,12 @@ if(mysqli_num_rows($result)>0){
 
 $user=mysqli_fetch_assoc($result);
 
-$_SESSION['User']=$user;
-
-echo "success";
+if($user['is_verified'] == 0){
+    echo "⚠️ Please verify your Email first! Verification link has been provided upon signup.";
+} else {
+    $_SESSION['User']=$user;
+    echo "success";
+}
 
 }
 else{

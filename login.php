@@ -56,6 +56,15 @@ button{
 #RF{
      color: Blue;
 }
+#FP {
+    color: #0275d8;
+    text-decoration: none;
+    font-weight: bold;
+}
+#FP:hover {
+    color: #01437d;
+    text-decoration: underline;
+}
 </style>
 
 <body>
@@ -80,6 +89,8 @@ button{
 
 <button type="submit"><b>Login</b></button>
     
+    <p><a id="FP" href="forgot_password.php">🔑 Forgot Password?</a></p>
+
     <p> If Don't have an Account then Register Yourself <a id="RF" href="SignUp.php">>Registration Form</a> </p>
 
 
