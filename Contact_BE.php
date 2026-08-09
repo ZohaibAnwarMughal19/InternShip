@@ -1,9 +1,18 @@
 <?php
+session_start();
 include('db.php');
 
-// 1. Fetch Table Rows (Ordered by Favorites first, then newest)
+// Session Protection: Only logged-in users can interact with contacts
+if (!isset($_SESSION['User'])) {
+    echo "Unauthorized access! Please login first.";
+    exit;
+}
+
+$user_id = (int)$_SESSION['User']['id'];
+
+// 1. Fetch User-Specific Table Rows (Ordered by Favorites first, then newest)
 if (isset($_GET['action']) && $_GET['action'] === 'fetch') {
-    $result = mysqli_query($conn, "SELECT * FROM contacts ORDER BY is_favorite DESC, id DESC");
+    $result = mysqli_query($conn, "SELECT * FROM contacts WHERE user_id = $user_id ORDER BY is_favorite DESC, id DESC");
     
     if ($result && mysqli_num_rows($result) > 0) {
         $sr = 1;
@@ -58,10 +67,10 @@ if (isset($_GET['action']) && $_GET['action'] === 'fetch') {
     exit;
 }
 
-// 2. Fetch Single Contact JSON for Edit Modal
+// 2. Fetch Single User Contact JSON for Edit Modal
 if (isset($_GET['action']) && $_GET['action'] === 'get_single' && isset($_GET['id'])) {
     $id = (int)$_GET['id'];
-    $res = mysqli_query($conn, "SELECT * FROM contacts WHERE id = $id");
+    $res = mysqli_query($conn, "SELECT * FROM contacts WHERE id = $id AND user_id = $user_id");
     if ($res && mysqli_num_rows($res) > 0) {
         $contact = mysqli_fetch_assoc($res);
         header('Content-Type: application/json');
@@ -76,26 +85,26 @@ if (isset($_GET['action']) && $_GET['action'] === 'get_single' && isset($_GET['i
 // 3. Toggle Favorite Status
 if (isset($_GET['action']) && $_GET['action'] === 'toggle_favorite' && isset($_GET['id'])) {
     $id = (int)$_GET['id'];
-    $check = mysqli_query($conn, "SELECT is_favorite FROM contacts WHERE id = $id");
+    $check = mysqli_query($conn, "SELECT is_favorite FROM contacts WHERE id = $id AND user_id = $user_id");
     if ($check && mysqli_num_rows($check) > 0) {
         $curr = mysqli_fetch_assoc($check)['is_favorite'];
         $new_fav = ($curr == 1) ? 0 : 1;
-        mysqli_query($conn, "UPDATE contacts SET is_favorite = $new_fav WHERE id = $id");
+        mysqli_query($conn, "UPDATE contacts SET is_favorite = $new_fav WHERE id = $id AND user_id = $user_id");
         echo 'success';
     }
     exit;
 }
 
-// 4. Delete Contact
+// 4. Delete User Contact
 if (isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id'])) {
     $id = (int)$_POST['id'];
-    $check = mysqli_query($conn, "SELECT profile_pic FROM contacts WHERE id = $id");
+    $check = mysqli_query($conn, "SELECT profile_pic FROM contacts WHERE id = $id AND user_id = $user_id");
     if ($check && mysqli_num_rows($check) > 0) {
         $row = mysqli_fetch_assoc($check);
         if (!empty($row['profile_pic']) && file_exists($row['profile_pic'])) {
             @unlink($row['profile_pic']); // Remove image file
         }
-        mysqli_query($conn, "DELETE FROM contacts WHERE id = $id");
+        mysqli_query($conn, "DELETE FROM contacts WHERE id = $id AND user_id = $user_id");
         echo 'success';
     } else {
         echo 'Contact not found';
@@ -103,7 +112,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete' && isset($_POST['id
     exit;
 }
 
-// 5. Update Contact (Edit Form Submit)
+// 5. Update User Contact (Edit Form Submit)
 if (isset($_POST['action']) && $_POST['action'] === 'update') {
     $id = (int)($_POST['edit_id'] ?? 0);
     $name = trim($_POST['name'] ?? '');
@@ -121,7 +130,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'update') {
         $new_path = 'uploads/' . time() . '_' . basename($_FILES['edit_myfile']['name']);
         if (move_uploaded_file($_FILES['edit_myfile']['tmp_name'], $new_path)) {
             // Delete old picture if exists
-            $old_res = mysqli_query($conn, "SELECT profile_pic FROM contacts WHERE id = $id");
+            $old_res = mysqli_query($conn, "SELECT profile_pic FROM contacts WHERE id = $id AND user_id = $user_id");
             if ($old_res && $old_row = mysqli_fetch_assoc($old_res)) {
                 if (!empty($old_row['profile_pic']) && file_exists($old_row['profile_pic'])) {
                     @unlink($old_row['profile_pic']);
@@ -131,7 +140,7 @@ if (isset($_POST['action']) && $_POST['action'] === 'update') {
         }
     }
 
-    $sql = "UPDATE contacts SET name = '$name', email = '$email', mobile_no = '$mobile_no', gender = '$gender' {$pic_sql} WHERE id = $id";
+    $sql = "UPDATE contacts SET name = '$name', email = '$email', mobile_no = '$mobile_no', gender = '$gender' {$pic_sql} WHERE id = $id AND user_id = $user_id";
     
     if (mysqli_query($conn, $sql)) {
         echo "success";
@@ -159,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['action'])) {
         move_uploaded_file($_FILES['myfile']['tmp_name'], $uploads_path);
     }
 
-    $sql = "INSERT INTO contacts (name, email, mobile_no, gender, profile_pic) VALUES ('$name', '$email', '$mobile_no', '$gender', '$uploads_path')";
+    $sql = "INSERT INTO contacts (user_id, name, email, mobile_no, gender, profile_pic) VALUES ($user_id, '$name', '$email', '$mobile_no', '$gender', '$uploads_path')";
     
     if (mysqli_query($conn, $sql)) {
         echo "success";

@@ -17,13 +17,13 @@ $userData = $_SESSION['User'];
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f1f5f9;
+            background: #faf5ef;
             min-height: 100vh;
-            color: #1e293b;
+            color: #3b0764;
         }
         
         .container {
@@ -34,13 +34,13 @@ $userData = $_SESSION['User'];
         /* LEFT SIDEBAR */
         .Left {
             width: 380px; 
-            background: linear-gradient(180deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(180deg, #2e1065 0%, #4c1d95 50%, #6b21a8 100%);
             color: white;
             padding: 40px 25px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            box-shadow: 5px 0 20px rgba(0,0,0,0.15);
+            box-shadow: 5px 0 25px rgba(76,29,149,0.15);
             position: relative;
         }
         
@@ -53,9 +53,9 @@ $userData = $_SESSION['User'];
             width: 160px; 
             height: 160px;
             border-radius: 50%;
-            border: 4px solid rgba(255,255,255,0.6);
+            border: 4px solid #fbbf24;
             object-fit: cover;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
             transition: transform 0.3s ease;
         }
         
@@ -66,28 +66,28 @@ $userData = $_SESSION['User'];
         .avatar-placeholder {
             width: 160px;
             height: 160px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.15);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 70px;
-            border: 4px solid rgba(255,255,255,0.6);
+            border: 4px solid #fbbf24;
             margin: 0 auto;
         }
         
         .welcome-text {
             font-size: 18px; 
-            opacity: 0.9;
+            color: #fef08a;
             margin-top: 10px;
-            font-weight: 500;
+            font-weight: 600;
             text-align: center;
         }
 
         .user-name-title {
             font-size: 26px;
-            font-weight: 700;
-            margin: 10px 0 20px 0;
+            font-weight: 800;
+            margin: 8px 0 20px 0;
             text-align: center;
             color: #ffffff;
         }
@@ -97,10 +97,10 @@ $userData = $_SESSION['User'];
             width: 100%;
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 14px;
+            padding: 22px;
             border: 1px solid rgba(255, 255, 255, 0.15);
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
         .info-item {
@@ -118,22 +118,44 @@ $userData = $_SESSION['User'];
             font-size: 12px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: rgba(255, 255, 255, 0.7);
-            font-weight: 600;
+            color: rgba(255, 255, 255, 0.75);
+            font-weight: 700;
             display: block;
             margin-bottom: 2px;
         }
 
         .info-value {
             color: #ffffff;
-            font-weight: 500;
+            font-weight: 600;
             font-size: 15px;
         }
 
         .info-value.highlight-yellow { color: #fde047; }
-        .info-value.highlight-green { color: #4ade80; }
+        .info-value.highlight-green { color: #86efac; }
         .info-value.highlight-orange { color: #fb923c; }
         .info-value.highlight-pink { color: #f472b6; }
+
+        .btn-nav-contacts {
+            width: 100%;
+            padding: 13px;
+            background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%);
+            border: 1px solid #fbbf24;
+            border-radius: 10px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 15px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 14px rgba(245, 158, 11, 0.35);
+        }
+
+        .btn-nav-contacts:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45);
+        }
 
         .logout-form {
             width: 100%;
@@ -143,26 +165,26 @@ $userData = $_SESSION['User'];
         .btn-logout {
             width: 100%;
             padding: 12px;
-            background-color: #ef4444;
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             color: white;
             font-size: 16px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: background-color 0.2s, transform 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(220, 38, 38, 0.25);
         }
 
         .btn-logout:hover {
-            background-color: #dc2626;
             transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(220, 38, 38, 0.35);
         }
         
         /* RIGHT CONTENT PANEL */
         .Right {
             flex: 1;
-            background: #f8fafc;
+            background: #faf5ef;
             padding: 50px 40px;
             overflow-y: auto;
         }
@@ -174,7 +196,7 @@ $userData = $_SESSION['User'];
         
         #H1S {
             text-align: center;
-            color: #1e293b;
+            color: #3b0764;
             font-size: 38px;
             margin-bottom: 40px;
             font-weight: 800;
@@ -192,7 +214,7 @@ $userData = $_SESSION['User'];
             transform: translateX(-50%);
             width: 100px;
             height: 4px;
-            background: linear-gradient(90deg, #1e3c72 0%, #2a5298 100%);
+            background: linear-gradient(90deg, #3b0764 0%, #7e22ce 50%, #f59e0b 100%);
             border-radius: 2px;
         }
         
@@ -204,30 +226,43 @@ $userData = $_SESSION['User'];
         }
         
         .card {
-            background: white;
+            background: #ffffff;
             padding: 30px 25px;
             border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 25px -5px rgba(76, 29, 149, 0.08);
             text-align: center;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+            border: 1px solid #e9d5ff;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
         }
         
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #3b0764 0%, #7e22ce 50%, #f59e0b 100%);
+        }
+
         .card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
-            border-color: #2a5298;
+            box-shadow: 0 15px 30px rgba(76, 29, 149, 0.15);
+            border-color: #c084fc;
         }
         
         .card h3 {
-            color: #1e293b;
+            color: #3b0764;
             margin-bottom: 12px;
             font-size: 22px;
-            font-weight: 700;
+            font-weight: 800;
         }
         
         .card p {
-            color: #64748b;
+            color: #4b5563;
             font-size: 15px;
             line-height: 1.6;
         }
@@ -299,18 +334,25 @@ $userData = $_SESSION['User'];
                 </div>
             </div>
 
+            <!-- Contact List Navigation Button -->
+            <a href="Contact_List.php" class="btn-nav-contacts">📇 My Contact Directory</a>
+
             <!-- Logout Form -->
             <form method="POST" action="Logout.php" class="logout-form">
                 <button type="submit" name="logout" class="btn-logout">Logout</button>
             </form>
         </div>
-                       
+                        
         <!-- RIGHT CONTENT -->
         <div class="Right">
             <div class="content-wrapper">
                 <h1 id="H1S">Student Dashboard</h1>
                 
                 <div class="dashboard-cards">
+                    <div class="card" onclick="window.location.href='Contact_List.php'">
+                        <h3>📇 Contact Directory</h3>
+                        <p>Manage your personal contacts, search, WhatsApp, email, call, and star favorite contacts.</p>
+                    </div>
                     <div class="card">
                         <h3>📊 Profile Info</h3>
                         <p>View and manage your personal details and account information.</p>
@@ -322,10 +364,6 @@ $userData = $_SESSION['User'];
                     <div class="card">
                         <h3>📚 Courses & Programs</h3>
                         <p>Explore available degree programs and course offerings.</p>
-                    </div>
-                    <div class="card">
-                        <h3>⚙️ Account Settings</h3>
-                        <p>Update security options and profile preferences.</p>
                     </div>
                 </div>
             </div>
