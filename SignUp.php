@@ -13,6 +13,7 @@
     </div>
     
     <?php include('header.php'); ?>
+    <?php include('menu.php'); ?>
     
 
     <form method="POST" action="Signup_BE.php" enctype="multipart/form-data">

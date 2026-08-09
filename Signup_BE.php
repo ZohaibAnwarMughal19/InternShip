@@ -59,7 +59,7 @@ if(mysqli_num_rows($check_res) > 0) {
             
             // Sender Credentials (Your Namecheap domain email & password)
             $mail->Username   = 'no_reply@exceptionalcore.online'; // Replace with your domain email
-            $mail->Password   = 'YOUR_EMAIL_PASSWORD_HERE'; // Replace with your domain email password
+            $mail->Password   = '{Pookie_!@!_Bachy}'; // Replace with your domain email password
             
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // SSL encryption for Namecheap
             $mail->Port       = 465;                         // Namecheap SSL Port 465
