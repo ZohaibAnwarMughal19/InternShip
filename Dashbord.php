@@ -336,6 +336,9 @@ $userData = $_SESSION['User'];
 
             <!-- Contact List Navigation Button -->
             <a href="Contact_List.php" class="btn-nav-contacts">📇 My Contact Directory</a>
+            
+            <!-- Gallery Navigation Button -->
+            <a href="User_Gallery.php" class="btn-nav-contacts" style="background: linear-gradient(135deg, #7e22ce 0%, #a855f7 100%); border-color: #c084fc;">🖼️ My Photo Gallery & Drive</a>
 
             <!-- Logout Form -->
             <form method="POST" action="Logout.php" class="logout-form">
@@ -349,6 +352,10 @@ $userData = $_SESSION['User'];
                 <h1 id="H1S">Student Dashboard</h1>
                 
                 <div class="dashboard-cards">
+                    <div class="card" onclick="window.location.href='User_Gallery.php'">
+                        <h3>🖼️ Photo Gallery & Drive</h3>
+                        <p>Upload public & private photos, view image descriptions, sync to Google Drive, and manage or delete private photos.</p>
+                    </div>
                     <div class="card" onclick="window.location.href='Contact_List.php'">
                         <h3>📇 Contact Directory</h3>
                         <p>Manage your personal contacts, search, WhatsApp, email, call, and star favorite contacts.</p>

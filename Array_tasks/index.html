@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>100 Employee Directory API & Database Demo</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- jQuery Library -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: rgba(30, 41, 59, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent: #10b981;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --table-row-hover: rgba(99, 102, 241, 0.06);
+            --th-bg: rgba(15, 23, 42, 0.8);
+            --td-color: #cbd5e1;
+            --input-bg: rgba(15, 23, 42, 0.6);
+            --toast-bg: #1e293b;
+            --badge-bg: rgba(99, 102, 241, 0.2);
+            --badge-text: #a5b4fc;
+        }
+
+        [data-theme="light"] {
+            --bg-color: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(0, 0, 0, 0.08);
+            --primary: #4f46e5;
+            --primary-hover: #4338ca;
+            --accent: #059669;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --table-row-hover: rgba(79, 70, 229, 0.06);
+            --th-bg: #e2e8f0;
+            --td-color: #334155;
+            --input-bg: #ffffff;
+            --toast-bg: #ffffff;
+            --badge-bg: rgba(79, 70, 229, 0.12);
+            --badge-text: #4f46e5;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.12) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 2rem 1.5rem;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            padding: 1.5rem 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #a5b4fc, #6366f1, #34d399);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        [data-theme="light"] .header-title h1 {
+            background: linear-gradient(135deg, #4f46e5, #059669);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .header-title p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-top: 0.25rem;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), var(--primary-hover));
+            color: #fff;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background: rgba(99, 102, 241, 0.12);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            padding: 1.5rem;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .stat-icon.purple { background: rgba(99, 102, 241, 0.15); color: #818cf8; }
+        .stat-icon.green  { background: rgba(16, 185, 129, 0.15); color: #10b981; }
+        .stat-icon.blue   { background: rgba(56, 189, 248, 0.15); color: #0284c7; }
+        .stat-icon.orange { background: rgba(251, 146, 60, 0.15); color: #ea580c; }
+
+        .stat-info h3 {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-info .value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        /* Main Card Table Area */
+        .main-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .table-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            max-width: 420px;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--card-border);
+            padding: 0.75rem 1rem 0.75rem 2.75rem;
+            border-radius: 10px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        .badge-count {
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Table */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: 12px;
+            border: 1px solid var(--card-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        th {
+            background: var(--th-bg);
+            padding: 1rem;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        td {
+            padding: 1rem;
+            font-size: 0.95rem;
+            border-bottom: 1px solid var(--card-border);
+            color: var(--td-color);
+        }
+
+        tr:hover td {
+            background: var(--table-row-hover);
+        }
+
+        .user-cell {
+            display: flex;
+            align-items: center;
+            gap: 0.85rem;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #8b5cf6);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .designation-badge {
+            display: inline-block;
+            padding: 0.35rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            background: rgba(56, 189, 248, 0.12);
+            color: #0284c7;
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        [data-theme="dark"] .designation-badge {
+            color: #38bdf8;
+        }
+
+        .salary-tag {
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .loading-container {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            font-size: 2rem;
+            color: var(--primary);
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--toast-bg);
+            color: var(--text-main);
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 999;
+            border: 1px solid var(--card-border);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-title">
+                <h1><i class="fa-solid fa-database"></i> 100 Employee Data API & DB</h1>
+                <p>Fetch array from PHP API endpoint stored in MySQL Database using jQuery AJAX</p>
+            </div>
+            <div class="header-actions">
+                <button id="themeToggleBtn" class="btn btn-outline" title="Toggle Theme">
+                    <i class="fa-solid fa-sun" id="themeIcon"></i> <span id="themeText">Light Mode</span>
+                </button>
+                <button id="reseedBtn" class="btn">
+                    <i class="fa-solid fa-arrows-rotate"></i> Re-Seed 100 Records
+                </button>
+            </div>
+        </header>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon purple"><i class="fa-solid fa-users"></i></div>
+                <div class="stat-info">
+                    <h3>Total Employees</h3>
+                    <div class="value" id="statTotal">--</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon green"><i class="fa-solid fa-money-bill-wave"></i></div>
+                <div class="stat-info">
+                    <h3>Total Payroll</h3>
+                    <div class="value" id="statPayroll">--</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon blue"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="stat-info">
+                    <h3>Average Salary</h3>
+                    <div class="value" id="statAvg">--</div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon orange"><i class="fa-solid fa-server"></i></div>
+                <div class="stat-info">
+                    <h3>API Connection</h3>
+                    <div class="value" id="statStatus" style="font-size: 1.1rem; color: var(--accent);">Connected</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-card">
+            <div class="table-controls">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" class="search-input" placeholder="Search by name, email or designation...">
+                </div>
+                <div class="badge-count">
+                    Showing <span id="recordCount">0</span> Records
+                </div>
+            </div>
+
+            <!-- Table -->
+            <div class="table-responsive">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Employee Name</th>
+                            <th>Email Address</th>
+                            <th>Designation</th>
+                            <th>Salary (PKR)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="employeeTableBody">
+                        <!-- AJAX content will be injected here -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Loading State -->
+            <div id="loadingSpinner" class="loading-container">
+                <i class="fa-solid fa-circle-notch spinner"></i>
+                <p>Loading 100 Employee records via API...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toastNotification" class="toast">
+        <i class="fa-solid fa-circle-check" style="color: var(--accent); font-size: 1.25rem;"></i>
+        <span id="toastMessage">Records loaded successfully!</span>
+    </div>
+
+    <!-- jQuery AJAX & Simple Theme Logic -->
+    <script>
+        $(document).ready(function() {
+
+            // Theme Switcher Function (Simple if-else, No ternary operator)
+            function setTheme(theme) {
+                $('html').attr('data-theme', theme);
+                localStorage.setItem('app-theme', theme);
+
+                if (theme === 'light') {
+                    $('#themeIcon').removeClass('fa-sun').addClass('fa-moon');
+                    $('#themeText').text('Dark Mode');
+                } else {
+                    $('#themeIcon').removeClass('fa-moon').addClass('fa-sun');
+                    $('#themeText').text('Light Mode');
+                }
+            }
+
+            // Check saved theme from localStorage
+            let savedTheme = localStorage.getItem('app-theme');
+            if (savedTheme == null) {
+                savedTheme = 'dark';
+            }
+            setTheme(savedTheme);
+
+            // Toggle button click event
+            $('#themeToggleBtn').on('click', function() {
+                let currentTheme = $('html').attr('data-theme');
+                if (currentTheme === 'light') {
+                    setTheme('dark');
+                } else {
+                    setTheme('light');
+                }
+            });
+
+            // Helper function to format currency
+            function formatCurrency(amount) {
+                return 'Rs. ' + parseFloat(amount).toLocaleString('en-PK');
+            }
+
+            // Helper function to get initials for avatar
+            function getInitials(name) {
+                let parts = name.split(' ');
+                if (parts.length >= 2) {
+                    return (parts[0][0] + parts[1][0]).toUpperCase();
+                }
+                return name.substring(0, 2).toUpperCase();
+            }
+
+            // Toast Alert notification
+            function showToast(msg) {
+                $('#toastMessage').text(msg);
+                $('#toastNotification').addClass('show');
+                setTimeout(function() {
+                    $('#toastNotification').removeClass('show');
+                }, 3500);
+            }
+
+            // Function to fetch data using jQuery AJAX
+            function fetchEmployeeData(searchQuery = '') {
+                $('#loadingSpinner').show();
+                $('#employeeTableBody').hide();
+
+                $.ajax({
+                    url: 'api.php',
+                    type: 'GET',
+                    data: { search: searchQuery },
+                    dataType: 'json',
+                    success: function(response) {
+                        $('#loadingSpinner').hide();
+                        $('#employeeTableBody').show();
+
+                        if (response.status === 'success') {
+                            let rowsHtml = '';
+                            let employees = response.data;
+
+                            // Update Stat Cards
+                            $('#statTotal').text(response.stats.total);
+                            $('#statPayroll').text(formatCurrency(response.stats.payroll));
+                            $('#statAvg').text(formatCurrency(response.stats.avg));
+                            $('#recordCount').text(response.count);
+
+                            if (employees.length === 0) {
+                                rowsHtml = `
+                                    <tr>
+                                        <td colspan="5" style="text-align: center; padding: 2.5rem; color: var(--text-muted);">
+                                            <i class="fa-solid fa-folder-open" style="font-size: 2rem; margin-bottom: 0.5rem; display: block;"></i>
+                                            No records found matching your search.
+                                        </td>
+                                    </tr>
+                                `;
+                            } else {
+                                $.each(employees, function(index, emp) {
+                                    rowsHtml += `
+                                        <tr>
+                                            <td style="font-weight: 700; color: var(--primary);">#${emp.id}</td>
+                                            <td>
+                                                <div class="user-cell">
+                                                    <div class="avatar">${getInitials(emp.name)}</div>
+                                                    <div class="user-name">${emp.name}</div>
+                                                </div>
+                                            </td>
+                                            <td>${emp.email}</td>
+                                            <td><span class="designation-badge">${emp.designation}</span></td>
+                                            <td><span class="salary-tag">${formatCurrency(emp.salary)}</span></td>
+                                        </tr>
+                                    `;
+                                });
+                            }
+
+                            $('#employeeTableBody').html(rowsHtml);
+                        } else {
+                            alert('Error loading data');
+                        }
+                    },
+                    error: function() {
+                        $('#loadingSpinner').hide();
+                        $('#employeeTableBody').show();
+                        $('#employeeTableBody').html(`
+                            <tr>
+                                <td colspan="5" style="text-align: center; color: #ef4444; padding: 2rem;">
+                                    Failed to connect to backend API.
+                                </td>
+                            </tr>
+                        `);
+                    }
+                });
+            }
+
+            // Initial load of 100 people data
+            fetchEmployeeData();
+
+            // Search filter with live jQuery keyup event
+            let searchTimer;
+            $('#searchInput').on('keyup', function() {
+                clearTimeout(searchTimer);
+                let query = $(this).val();
+                searchTimer = setTimeout(function() {
+                    fetchEmployeeData(query);
+                }, 300);
+            });
+
+            // Re-seed DB button event
+            $('#reseedBtn').on('click', function() {
+                let $btn = $(this);
+                $btn.prop('disabled', true).html('<i class="fa-solid fa-circle-notch spinner"></i> Generating...');
+
+                $.ajax({
+                    url: 'seed.php',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(res) {
+                        $btn.prop('disabled', false).html('<i class="fa-solid fa-arrows-rotate"></i> Re-Seed 100 Records');
+                        showToast(res.message);
+                        fetchEmployeeData($('#searchInput').val());
+                    },
+                    error: function() {
+                        $btn.prop('disabled', false).html('<i class="fa-solid fa-arrows-rotate"></i> Re-Seed 100 Records');
+                        showToast('Error generating fresh data.');
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

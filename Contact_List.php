@@ -1,89 +1,77 @@
-<?php
-session_start();
-if (!isset($_SESSION['User'])) {
-    header("Location: login.php");
-    exit();
-}
-$userData = $_SESSION['User'];
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contact Directory - BGNU Portal</title>
+    <title>Contact List & Registration</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-        body { margin: 0; padding: 0; background-color: #faf5ef; color: #3b0764; }
-        .main-container { width: 95%; max-width: 1200px; margin: 20px auto; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { margin: 0; padding: 0; background-color: #f4f7f6; }
+        .main-container { width: 95%; margin: 20px auto; }
         
         /* Alert Message */
-        .alert { padding: 15px 20px; border-radius: 10px; margin-bottom: 20px; font-weight: bold; text-align: center; }
-        .alert-success { background-color: #f3e8ff; color: #581c87; border: 1px solid #c084fc; }
-        .alert-error { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .alert { padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; font-weight: bold; text-align: center; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
 
         /* Form & Card Styling */
-        .form-card, .table-card { background: #ffffff; border-radius: 16px; padding: 28px; box-shadow: 0 10px 25px -5px rgba(76, 29, 149, 0.08); margin-bottom: 30px; border: 1px solid #e9d5ff; position: relative; overflow: hidden; }
-        .form-card::before, .table-card::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #3b0764 0%, #7e22ce 50%, #f59e0b 100%); }
-        .form-card h2 { margin-top: 0; color: #3b0764; font-size: 24px; font-weight: 800; border-bottom: 2px solid #e9d5ff; padding-bottom: 12px; margin-bottom: 22px; }
+        .form-card, .table-card { background: #ffffff; border-radius: 12px; padding: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); margin-bottom: 30px; border: 1px solid #e1e8ed; }
+        .form-card h2 { margin-top: 0; color: #003366; font-size: 24px; border-bottom: 2px solid #003366; padding-bottom: 10px; margin-bottom: 20px; }
         
         /* Table Header Box & Search Bar */
-        .table-header-box { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e9d5ff; padding-bottom: 12px; margin-bottom: 22px; flex-wrap: wrap; gap: 15px; }
-        .table-header-box h2 { margin: 0; color: #3b0764; font-size: 24px; font-weight: 800; }
-        .search-input { padding: 10px 16px; border: 1px solid #e9d5ff; border-radius: 25px; font-size: 14.5px; width: 320px; outline: none; background: #fdfbf7; transition: all 0.2s ease; }
-        .search-input:focus { border-color: #7e22ce; background: #ffffff; box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.18); }
+        .table-header-box { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #003366; padding-bottom: 10px; margin-bottom: 20px; flex-wrap: wrap; gap: 15px; }
+        .table-header-box h2 { margin: 0; color: #003366; font-size: 24px; }
+        .search-input { padding: 9px 15px; border: 1px solid #ccc; border-radius: 20px; font-size: 14px; width: 300px; outline: none; transition: all 0.2s ease; }
+        .search-input:focus { border-color: #003366; box-shadow: 0 0 5px rgba(0, 51, 102, 0.2); }
 
         .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
         .form-group { display: flex; flex-direction: column; margin-bottom: 12px; }
-        .form-group label { font-weight: 600; margin-bottom: 6px; color: #581c87; font-size: 14px; }
-        .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="file"] { padding: 11px; border: 1px solid #e9d5ff; border-radius: 8px; outline: none; background: #fdfbf7; transition: all 0.2s ease; }
-        .form-group input:focus { border-color: #7e22ce; background: #ffffff; box-shadow: 0 0 0 3px rgba(126, 34, 206, 0.18); }
+        .form-group label { font-weight: 600; margin-bottom: 6px; color: #333; font-size: 14px; }
+        .form-group input[type="text"], .form-group input[type="email"], .form-group input[type="file"] { padding: 10px; border: 1px solid #ccc; border-radius: 6px; outline: none; }
         .radio-group { display: flex; gap: 15px; align-items: center; margin-top: 8px; }
-        .radio-group label { font-weight: normal; cursor: pointer; display: flex; align-items: center; gap: 5px; color: #1f2937; }
+        .btn-submit { background-color: #003366; color: white; padding: 12px; border: none; border-radius: 6px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; width: 100%; }
+        .btn-submit:hover { background-color: #002244; }
         
-        .btn-submit { background: linear-gradient(135deg, #3b0764 0%, #581c87 50%, #7e22ce 100%); color: white; padding: 13px; border: none; border-radius: 10px; font-size: 16px; font-weight: 700; cursor: pointer; margin-top: 20px; width: 100%; box-shadow: 0 4px 14px rgba(76, 29, 149, 0.25); transition: all 0.2s ease; }
-        .btn-submit:hover { opacity: 0.95; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(76, 29, 149, 0.35); }
-        
-        .preview-img-box { width: 55px; height: 55px; border-radius: 50%; object-fit: cover; border: 2px solid #3b0764; display: none; margin-top: 8px; }
+        .preview-img-box { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #003366; display: none; margin-top: 8px; }
 
         /* Table Styling */
         .contact-table { width: 100%; border-collapse: collapse; text-align: left; }
-        .contact-table th, .contact-table td { padding: 14px 16px; border-bottom: 1px solid #faf5ef; vertical-align: middle; }
-        .contact-table th { background-color: #3b0764; color: #ffffff; font-size: 13px; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; }
-        .contact-table tr:hover { background-color: #f5f3ff; }
-        .avatar-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #e9d5ff; }
-        .avatar-placeholder { width: 50px; height: 50px; border-radius: 50%; background: #f3e8ff; color: #581c87; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; border: 2px solid #e9d5ff; }
+        .contact-table th, .contact-table td { padding: 12px 15px; border-bottom: 1px solid #eee; vertical-align: middle; }
+        .contact-table th { background-color: #003366; color: white; font-size: 13px; text-transform: uppercase; }
+        .contact-table tr:hover { background-color: #f8fafc; }
+        .avatar-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid #ddd; }
+        .avatar-placeholder { width: 50px; height: 50px; border-radius: 50%; background: #e2e8f0; color: #475569; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: bold; }
 
         /* Favorite Styling */
-        .fav-row { background-color: #fffbeb !important; }
-        .fav-badge { font-size: 11px; background: #fef08a; color: #854d0e; padding: 2px 8px; border-radius: 10px; margin-left: 6px; font-weight: 700; display: inline-block; border: 1px solid #fde047; }
+        .fav-row { background-color: #fffdf0 !important; }
+        .fav-badge { font-size: 11px; background: #fef08a; color: #854d0e; padding: 2px 7px; border-radius: 10px; margin-left: 6px; font-weight: 600; display: inline-block; }
         .btn-star { background-color: #ffffff !important; color: #d97706 !important; border: 2px solid #f59e0b !important; font-size: 13px !important; font-weight: 800 !important; border-radius: 8px !important; box-shadow: 0 2px 4px rgba(245, 158, 11, 0.2) !important; }
         .btn-star:hover { background-color: #fef3c7 !important; color: #b45309 !important; border-color: #d97706 !important; }
         .btn-star.active { background-color: #fef08a !important; color: #92400e !important; border: 2px solid #d97706 !important; box-shadow: 0 2px 6px rgba(217, 119, 6, 0.35) !important; }
 
         /* Action Buttons */
         .action-buttons { display: flex; gap: 6px; flex-wrap: wrap; }
-        .btn-act { padding: 7px 11px; border-radius: 8px; color: white; text-decoration: none; font-size: 12.5px; font-weight: 700; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: transform 0.15s ease, opacity 0.2s; }
-        .btn-act:hover { opacity: 0.95; transform: translateY(-1px); }
-        .btn-wa { background-color: #10b981; }
-        .btn-email { background-color: #0284c7; }
-        .btn-call { background-color: #7e22ce; }
-        .btn-edit { background-color: #d97706; }
-        .btn-delete { background-color: #dc2626; }
-        .no-data { text-align: center; padding: 35px; color: #6b7280; font-style: italic; }
+        .btn-act { padding: 6px 10px; border-radius: 6px; color: white; text-decoration: none; font-size: 12px; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; transition: transform 0.1s ease; }
+        .btn-act:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-wa { background-color: #25D366; }
+        .btn-email { background-color: #007bff; }
+        .btn-call { background-color: #28a745; }
+        .btn-edit { background-color: #f59e0b; }
+        .btn-delete { background-color: #ef4444; }
+        .no-data { text-align: center; padding: 30px; color: #777; font-style: italic; }
 
         /* Edit Modal Popup */
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(46, 16, 101, 0.6); backdrop-filter: blur(4px); align-items: center; justify-content: center; }
-        .modal-content { background: #fff; width: 92%; max-width: 550px; border-radius: 16px; padding: 28px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); border: 1px solid #e9d5ff; }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e9d5ff; padding-bottom: 10px; margin-bottom: 20px; }
-        .modal-header h3 { margin: 0; color: #3b0764; font-size: 20px; font-weight: 800; }
+        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(3px); align-items: center; justify-content: center; }
+        .modal-content { background: #fff; width: 92%; max-width: 550px; border-radius: 12px; padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #003366; padding-bottom: 10px; margin-bottom: 20px; }
+        .modal-header h3 { margin: 0; color: #003366; font-size: 20px; }
         .close-modal { font-size: 24px; font-weight: bold; cursor: pointer; color: #888; border: none; background: none; }
         .close-modal:hover { color: #333; }
     </style>
 </head>
 <body>
-
+  
     <?php include('header.php'); ?>
     <?php include('menu.php'); ?>
 
@@ -195,7 +183,7 @@ $userData = $_SESSION['User'];
                     <img id="edit_imgPreview" class="preview-img-box" alt="Current Profile Picture">
                 </div>
 
-                <button type="submit" id="btnUpdate" class="btn-submit" style="background: linear-gradient(135deg, #d97706 0%, #b45309 100%);">💾 Update Contact</button>
+                <button type="submit" id="btnUpdate" class="btn-submit" style="background-color: #f59e0b;">💾 Update Contact</button>
             </form>
         </div>
     </div>
