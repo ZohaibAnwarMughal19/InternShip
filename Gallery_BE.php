@@ -3,20 +3,6 @@ session_start();
 require_once 'db.php';
 require_once 'gdrive_helper.php';
 
-// Auto-create gallery table if not existing
-$createTableQuery = "CREATE TABLE IF NOT EXISTS `gallery` (
-    `id` INT AUTO_INCREMENT PRIMARY KEY,
-    `user_id` INT NOT NULL,
-    `user_name` VARCHAR(255) NOT NULL,
-    `description` TEXT NOT NULL,
-    `image_path` VARCHAR(255) NOT NULL,
-    `visibility` ENUM('public', 'private') NOT NULL DEFAULT 'public',
-    `gdrive_link` VARCHAR(500) DEFAULT NULL,
-    `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
-
-mysqli_query($conn, $createTableQuery);
-
 $action = $_REQUEST['action'] ?? '';
 
 // ----------------------------------------------------

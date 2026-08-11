@@ -340,6 +340,9 @@ $userData = $_SESSION['User'];
             <!-- Gallery Navigation Button -->
             <a href="User_Gallery.php" class="btn-nav-contacts" style="background: linear-gradient(135deg, #7e22ce 0%, #a855f7 100%); border-color: #c084fc;">🖼️ My Photo Gallery & Drive</a>
 
+            <!-- Chat Navigation Button -->
+            <a href="Chat.php" class="btn-nav-contacts" style="background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%); border-color: #60a5fa;">💬 Live Chat & Requests</a>
+
             <!-- Logout Form -->
             <form method="POST" action="Logout.php" class="logout-form">
                 <button type="submit" name="logout" class="btn-logout">Logout</button>
@@ -352,6 +355,10 @@ $userData = $_SESSION['User'];
                 <h1 id="H1S">Student Dashboard</h1>
                 
                 <div class="dashboard-cards">
+                    <div class="card" onclick="window.location.href='Chat.php'">
+                        <h3>💬 Realtime Chat & Requests</h3>
+                        <p>Send connection requests, accept/reject requests, and chat in real-time with fellow students.</p>
+                    </div>
                     <div class="card" onclick="window.location.href='User_Gallery.php'">
                         <h3>🖼️ Photo Gallery & Drive</h3>
                         <p>Upload public & private photos, view image descriptions, sync to Google Drive, and manage or delete private photos.</p>

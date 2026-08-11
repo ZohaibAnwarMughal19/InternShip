@@ -58,6 +58,7 @@
     <a href="Dashbord.php" class="bgnu-menu-link">🏠 Dashboard</a>
     <a href="Gallery.php" class="bgnu-menu-link">🖼️ Gallery</a>
     <a href="Contact_List.php" class="bgnu-menu-link">📇 Contact List</a>
+    <a href="Chat.php" class="bgnu-menu-link">💬 Chat</a>
     <a href="login.php" class="bgnu-menu-link">🔑 Login</a>
     <a href="SignUp.php" class="bgnu-menu-link">📝 Register</a>
 </nav>
